@@ -223,7 +223,7 @@ client.linux.example.com], completed successfully.
 
 ### Enabling Remote Execution
 
-bootstrap.py now includes the `--rex` & `--rex-user` features which allow the administrator to deploy the required SSH keys.
+bootstrap.py now includes the `--rex`,  `--rex-user` & `--rex-capsule` features which allow the administrator to deploy the required SSH keys.
 
 ~~~
 
@@ -235,6 +235,7 @@ bootstrap.py now includes the `--rex` & `--rex-user` features which allow the ad
     -a ak-Reg_To_Crash \
     --rex \
     --rex-user root
+    --rex-capsule foreman.example.com
 
 [SUCCESS], [2016-12-02 06:37:09], [/usr/bin/yum -y remove rhn-setup rhn-client-tools yum-rhn-plugin rhnsd rhn-check rhnlib spacewalk-abrt spacewalk-oscap osad 'rh-*-rhui-client'], completed successfully.
 
@@ -247,6 +248,13 @@ Check the **root** users authorized key file.
 ~~~
 cat ~/.ssh/authorized_keys
 ssh-rsa AAAAB3Nz.... foreman-proxy@foreman.example.com
+~~~
+
+If --rex-capsule is used from will be added to authorized key file.
+
+~~~
+cat ~/.ssh/authorized_keys
+from="foreman.example.com", ssh-rsa AAAAB3Nz.... foreman-proxy@foreman.example.com
 ~~~
 
 ### Skipping particular steps:

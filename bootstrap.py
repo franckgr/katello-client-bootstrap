@@ -387,7 +387,7 @@ def install_foreman_ssh_key():
             print_generic("Foreman's SSH key is already present in %s" % foreman_ssh_authfile)
             return
     if capsule:
-        foreman_ssh_authfile_line = os.sep.join(['from="',capsule ,'" ,', foreman_ssh_key])
+        foreman_ssh_authfile_line = os.sep.join(['from="',capsule ,'", ', foreman_ssh_key])
     else
         foreman_ssh_authfile_line = foreman_ssh_key
 
