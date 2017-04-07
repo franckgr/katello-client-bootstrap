@@ -366,6 +366,7 @@ def install_foreman_ssh_key():
     authorized keys file, so that remote execution becomes possible.
     """
     userpw = pwd.getpwnam(options.remote_exec_user)
+    capsule = pwd.getpwnam(options.remote_exec_capsule)
     foreman_ssh_dir = os.sep.join([userpw.pw_dir, '.ssh'])
     foreman_ssh_authfile = os.sep.join([foreman_ssh_dir, 'authorized_keys'])
     if not os.path.isdir(foreman_ssh_dir):
@@ -385,8 +386,13 @@ def install_foreman_ssh_key():
         if foreman_ssh_key in open(foreman_ssh_authfile, 'r').read():
             print_generic("Foreman's SSH key is already present in %s" % foreman_ssh_authfile)
             return
+    if capsule:
+        foreman_ssh_authfile_line = os.sep.join(['from="',capsule ,'" ,', foreman_ssh_key])
+    else
+        foreman_ssh_authfile_line = foreman_ssh_key
+
     output = os.fdopen(os.open(foreman_ssh_authfile, os.O_WRONLY | os.O_CREAT, 0600), 'a')
-    output.write(foreman_ssh_key)
+    output.write(foreman_ssh_authfile_line)
     os.chown(foreman_ssh_authfile, userpw.pw_uid, userpw.pw_gid)
     print_generic("Foreman's SSH key was added to %s" % foreman_ssh_authfile)
     output.close()
@@ -759,6 +765,7 @@ if __name__ == '__main__':
     parser.add_option("--unmanaged", dest="unmanaged", action="store_true", help="Add the server as unmanaged. Useful to skip provisioning dependencies.")
     parser.add_option("--rex", dest="remote_exec", action="store_true", help="Install Foreman's SSH key for remote execution.", default=False)
     parser.add_option("--rex-user", dest="remote_exec_user", default="root", help="Local user used by Foreman's remote execution feature.")
+    parser.add_option("--rex-capsule", dest="remote_exec_capsule", help="Limit ssh connexion to the specified capsule.")
     parser.add_option("--enablerepos", dest="enablerepos", help="Repositories to be enabled via subscription-manager - comma separated", metavar="enablerepos")
     parser.add_option("--skip", dest="skip", action="append", help="Skip the listed steps (choices: %s)" % SKIP_STEPS, choices=SKIP_STEPS, default=[])
     parser.add_option("--ip", dest="ip", help="IPv4 address of the primary interface in Foreman (defaults to the address used to make request to Foreman)")
